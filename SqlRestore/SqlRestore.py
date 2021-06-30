@@ -1,5 +1,5 @@
 import string
-
+import sqlparse
 
 class SqlRestore():
     SQL_START = "==>  Preparing: "
@@ -45,4 +45,4 @@ class SqlRestore():
                     value = '\'' + value + '\''
                     pass
                 sql = sql.replace(SqlRestore.REPLACE_REG, value, 1)
-        return sql
+        return sqlparse.format(sql, reindent=True, keyword_case='upper')
