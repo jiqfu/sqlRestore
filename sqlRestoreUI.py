@@ -1,6 +1,8 @@
 from tkinter import *
 from tkinter.scrolledtext import *
 
+import pyperclip
+
 from SqlRestore.SqlRestore import SqlRestore
 
 
@@ -23,6 +25,7 @@ class Application(Frame):
         result = SqlRestore.restore(self.input.get('1.0', END))
         self.input.delete(1.0, END)
         self.input.insert(INSERT, result)
+        pyperclip.copy(result)
 
     def create_widgets(self):
         self.input.pack()
