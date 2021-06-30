@@ -2,3 +2,5 @@
 build
 dist
 .idea
+sqlRestore.iml
+sqlRestoreUI.spec
