@@ -45,4 +45,6 @@ class SqlRestore():
                     value = '\'' + value + '\''
                     pass
                 sql = sql.replace(SqlRestore.REPLACE_REG, value, 1)
+            elif "null" == paramTemp or "NULL":
+                sql = sql.replace(SqlRestore.REPLACE_REG, paramTemp, 1)
         return sqlparse.format(sql, reindent=True, keyword_case='upper')
