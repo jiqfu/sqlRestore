@@ -1,16 +1,6 @@
 name: Build Windows EXE
 
 on:
-  workflow_dispatch:
-    inputs:
-      tag:
-        description: "Release tag to upload to (e.g. build-win-20251216)"
-        required: true
-        default: "build-win"
-      prerelease:
-        description: "Mark release as prerelease"
-        required: false
-        default: "true"
   push:
     tags:
       - "build-win-*"
@@ -56,10 +46,8 @@ jobs:
       - name: Create/Update release and upload asset
         env:
           GH_TOKEN: ${{ github.token }}
-          # For push(tag) events, `inputs` context doesn't exist.
-          # Use github.event.inputs.* which is safe across event types.
-          TAG: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tag || github.ref_name }}
-          PRERELEASE: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.prerelease || 'true' }}
+          TAG: ${{ github.ref_name }}
+          PRERELEASE: "true"
         shell: pwsh
         run: |
           $tag = "$env:TAG"
