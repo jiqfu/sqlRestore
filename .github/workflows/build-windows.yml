@@ -10,8 +10,7 @@ on:
       prerelease:
         description: "Mark release as prerelease"
         required: false
-        type: boolean
-        default: true
+        default: "true"
   push:
     tags:
       - "build-win-*"
