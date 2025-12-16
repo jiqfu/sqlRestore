@@ -57,22 +57,16 @@ jobs:
       - name: Create/Update release and upload asset
         env:
           GH_TOKEN: ${{ github.token }}
-          INPUT_TAG: ${{ inputs.tag }}
-          INPUT_PRERELEASE: ${{ inputs.prerelease }}
-          REF_NAME: ${{ github.ref_name }}
-          EVENT_NAME: ${{ github.event_name }}
+          # For push(tag) events, `inputs` context doesn't exist.
+          # Use github.event.inputs.* which is safe across event types.
+          TAG: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.tag || github.ref_name }}
+          PRERELEASE: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.prerelease || 'true' }}
         shell: pwsh
         run: |
-          # Determine tag name:
-          # - workflow_dispatch: use inputs.tag
-          # - push tag event: use github.ref_name
-          $tag = if ($env:EVENT_NAME -eq "workflow_dispatch") { "$env:INPUT_TAG" } else { "$env:REF_NAME" }
+          $tag = "$env:TAG"
           if ([string]::IsNullOrWhiteSpace($tag)) { throw "tag is required" }
 
-          # Determine prerelease flag:
-          # - workflow_dispatch: respect inputs.prerelease
-          # - push tag event: default to true
-          $isPrerelease = if ($env:EVENT_NAME -eq "workflow_dispatch") { "$env:INPUT_PRERELEASE" } else { "true" }
+          $isPrerelease = "$env:PRERELEASE"
 
           # Create release if not exists
           gh release view $tag 2>$null
